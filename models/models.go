@@ -6,7 +6,8 @@ type User struct {
 	ID                   uint   `json:"id,omitempty"`
 	Firstname            string `json:"firstname,omitempty"`
 	Lastname             string `json:"lastname,omitempty"`
-	Email                string `json:"email,omitempty"`
+	Username             string `json:"username,omitempty"`
+	Password             string `json:"-"`
 	FriendInvitationCode string `json:"friend_invitation_code,omitempty"`
 }
 
@@ -44,4 +45,11 @@ type EventAsset struct {
 	Type    string `json:"type,omitempty"`
 	Private bool   `json:"private,omitempty"`
 	AssetID string `json:"asset_id,omitempty"`
+}
+
+type Session struct {
+	ID     uint
+	User   User
+	UserID uint
+	Token  string
 }
