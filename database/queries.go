@@ -15,3 +15,5 @@ func UsernameExists(db *gorm.DB, username string) bool {
 	}
 	return true
 }
+
+
