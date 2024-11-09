@@ -7,9 +7,6 @@ import (
 	"net/http"
 	_ "strings"
 )
-func main() {
-	http.HandleFunc("")
-}
 
 func registrationshandler( w http.ResonseWriter, req *http.Request)  {
   req.ParseForm()
