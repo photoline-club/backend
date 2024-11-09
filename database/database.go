@@ -27,7 +27,6 @@ func (c *DBConfig) ConnectionString() string {
 }
 
 func InitialiseDB(cfg DBConfig) *gorm.DB {
-	fmt.Printf("cfg: %v\n", cfg)
 	fmt.Printf("cfg.ConnectionString(): %v\n", cfg.ConnectionString())
 	db, err := gorm.Open(mysql.Open(cfg.ConnectionString()), &gorm.Config{})
 	if err != nil {
@@ -38,5 +37,6 @@ func InitialiseDB(cfg DBConfig) *gorm.DB {
 	db.AutoMigrate(&models.Event{})
 	db.AutoMigrate(&models.EventAsset{})
 	db.AutoMigrate(&models.EventParticipant{})
+	db.AutoMigrate(&models.Session{})
 	return db
 }
