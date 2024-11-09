@@ -21,3 +21,15 @@ func UsersAreFriends(db *gorm.DB, userA uint, userB uint) bool {
 		gorm.ErrRecordNotFound)
 }
 
+func VisibleEventsForUser(db *gorm.DB, uid uint) []models.Event {
+	var res []models.EventParticipant
+	db.Model(&models.EventParticipant{}).
+		Where(&models.EventParticipant{UserID: uid}).
+		Preload("Event").
+		Find(&res)
+	out := make([]models.Event, len(res))
+	for i, ep := range res {
+		out[i] = ep.Event
+	}
+	return out
+}

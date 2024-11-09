@@ -45,7 +45,7 @@ func AddFriend(ctx *gin.Context) {
 		return
 	}
 
-	if database.UsersAreFriends(db, user.ID, friend.ID) {
+	if database.UsersAreFriends(db, user.ID, friend.ID) || friend.ID == user.ID {
 		ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{})
 		return
 	}
