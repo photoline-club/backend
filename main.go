@@ -20,6 +20,7 @@ func main() {
 
 	router := r.Group("/api")
     router.Use(middleware.InjectDB(db))
+    router.Use(middleware.CORSMiddleware())
 	routes.SetupRoutes(router)
 
 	r.Run("0.0.0.0:8080")
