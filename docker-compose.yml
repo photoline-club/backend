@@ -1,0 +1,18 @@
+version: "3.1"
+
+services:
+  mariadb:
+    image: mariadb
+    restart: always
+    env_file: .env
+    container_name: photoline-mariadb
+    hostname: photoline-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./volumes/sql:/var/lib/mysql
