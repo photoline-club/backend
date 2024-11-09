@@ -11,18 +11,33 @@ import (
 )
 
 // need to changet these, the images, have who posted it the private etc. we send all this to the front 
-type todo struct{ 
+type image struct{ 
 	ID		string 	`json:"id"`
 		Item		string `json:"item"`
 		Completed 		bool `json:"completed"`
 }
 
-var todos = []todo{
+var images = []image{
 	{ID:"1", Item: "", Completed:false},
 }
 
-func getImage(context *gin.Context){ // the context conatins the infor for the incoming http request
-	context.IndentedJSON(http.StatusOK, todos)
+func GetImage(context *gin.Context){ // the context conatins the infor for the incoming http request
+	context.IndentedJSON(http.StatusOK, images)
+}
+
+func AddImage(context *gin.Context){
+	var NewImage image 
+
+	if err := context.BindJSON(&NewImage); err != nil{
+		return
+	}
+	
+	images = append(images, NewImage)
+
+	context.IndentedJSON(http.StatusCreated, NewImage)
+
+
+
 }
 
 func main() {
@@ -37,9 +52,11 @@ func main() {
     router.Use(middleware.InjectDB(db))
 	routes.SetupRoutes(router)
 
+	r.GET("/Images", GetImage) // call the get imaghes
+	r.POST("/Images", GetImage)
 	r.Run("0.0.0.0:8080")
 	
-	r.GET("/Images", getImage) // call the get imaghes
+
 	
 }
 
