@@ -50,6 +50,7 @@ func main() {
 
 	router := r.Group("/api")
     router.Use(middleware.InjectDB(db))
+    router.Use(middleware.CORSMiddleware())
 	routes.SetupRoutes(router)
 
 	r.GET("/Images", GetImage) // call the get imaghes
