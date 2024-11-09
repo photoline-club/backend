@@ -30,7 +30,7 @@ func Authenticate(preload ...string) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 			return
 		}
-		token, valid := strings.CutPrefix(header, "Bearer")
+		token, valid := strings.CutPrefix(header, "Bearer ")
 		if !valid {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 			return
