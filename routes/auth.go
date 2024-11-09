@@ -76,6 +76,6 @@ func Logout(ctx *gin.Context) {
 
 func SetupAuthRoutes(router *gin.RouterGroup) {
 	router.POST("/login", Login)
-	router.POST("/logout", Logout)
+	router.POST("/logout", middleware.Authenticate(), Logout)
 	router.POST("/register", Register)
 }
