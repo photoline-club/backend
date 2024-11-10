@@ -19,12 +19,15 @@ func main() {
 	})
 
 	r.MaxMultipartMemory = 8 << 20  // 8 MiB
+	
+	r.Static("/images", "./images")
 
 	router := r.Group("/api")
     router.Use(middleware.InjectDB(db)) 
     router.Use(middleware.CORSMiddleware())
 	r.Use(middleware.CORSMiddleware())
 	routes.SetupRoutes(router)
+
 	
 
 	r.Run("0.0.0.0:8080")
