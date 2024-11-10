@@ -32,7 +32,7 @@ func GetImages(context *gin.Context) { // the context conatins the infor for the
 		context.IndentedJSON(http.StatusBadRequest, nil)
 	}
 
-	context.IndentedJSON(http.StatusOK, images)
+	context.IndentedJSON(http.StatusOK, gin.H{"images": images})
 
 }
 
