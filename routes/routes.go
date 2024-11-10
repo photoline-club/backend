@@ -6,5 +6,7 @@ import (
 
 func SetupRoutes(router *gin.RouterGroup) {
     SetupAuthRoutes(router)
-		SetUpImagesRoutes(router)
+    SetupFriendsRoutes(router)
+    SetupEventsRoutes(router)
+    SetUpImagesRoutes(router)
 }

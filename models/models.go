@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	ID                   uint   `json:"id,omitempty"`
@@ -13,10 +17,14 @@ type User struct {
 
 type FriendLink struct {
 	ID       uint `json:"id,omitempty"`
-	User     User `json:"user,omitempty"`
-	UserID   uint `json:"user_id,omitempty"`
+	User     User `json:"-"`
+	UserID   uint `json:"-"`
 	Friend   User `json:"friend,omitempty"`
 	FriendID uint `json:"friend_id,omitempty"`
+}
+func (f *FriendLink) AfterFind(tx *gorm.DB) error {
+    f.Friend.FriendInvitationCode = ""
+    return nil
 }
 
 type Event struct {
