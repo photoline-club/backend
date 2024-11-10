@@ -26,7 +26,9 @@ func GetImages(context *gin.Context) { // the context conatins the infor for the
 	user := middleware.GetUser(context)
 
 	var images []models.EventAsset
-	if !errors.Is(db.Model(&models.EventAsset{}).Where("event_id = ? AND (NOT private OR (user_ID = ?))", EventID, user.ID).Find(&images).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(db.Model(&models.EventAsset{}).
+		Preload("User").
+		Where("event_id = ? AND (NOT private OR (user_ID = ?))", EventID, user.ID).Find(&images).Error, gorm.ErrRecordNotFound) {
 		context.IndentedJSON(http.StatusOK, gin.H{"images": images})
 	} else {
 		context.IndentedJSON(http.StatusBadRequest, nil)
