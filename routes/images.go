@@ -31,7 +31,7 @@ func GetImages(context *gin.Context){ // the context conatins the infor for the 
 	
 }
 
-func UpdateImage(context *gin.Context, filename string){
+func UpdateImage(context *gin.Context){
 	// we need: Title, Event, Type, Private --> title optional
 	var imageIn ImageReq
 	if context.BindJSON(&imageIn) != nil{
@@ -79,4 +79,5 @@ func AddImages(context *gin.Context){
 func SetUpImagesRoutes(router *gin.RouterGroup){
 	router.GET("/events/:id", middleware.Authenticate(), GetImages)
 	router.POST("/events/:id", middleware.Authenticate(), AddImages)
+	router.PATCH("/events/:id", middleware.Authenticate(), UpdateImage)
 }
