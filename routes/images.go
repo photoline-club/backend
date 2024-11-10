@@ -4,15 +4,15 @@ import (
 	"net/http"
 	"github.com/photoline-club/backend/models"
 	"github.com/photoline-club/backend/middleware"
+	"github.com/photoline-club/backend/auth"
 	"github.com/gin-gonic/gin"
+	"strings"
+	"strconv"
 )
 
 type ImageReq struct{
 	Title string `json:"user"` // OPtioal 
-	User    models.User   `json:"user", binding:"required"`
-	EventID   uint  `json:"event, binding:"required"`
-	Type    string `json:"type,binding:"required"`
-	Private bool   `json:"private,binding:"required"`
+	Private bool   `json:"private"`
 }// TODO: why is above warngin 
 
 // need to changet these, the images, have who posted it the private etc. we send all this to the front 
@@ -31,33 +31,52 @@ func GetImages(context *gin.Context){ // the context conatins the infor for the 
 	
 }
 
-func AddImage(context *gin.Context){
+func UpdateImage(context *gin.Context, filename string){
 	// we need: Title, Event, Type, Private --> title optional
 	var imageIn ImageReq
 	if context.BindJSON(&imageIn) != nil{
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Image could not be added"})
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Image could not be altered"})
 		return 
 	}
 
 	context.IndentedJSON(http.StatusOK, imageIn)
-
-
-		// Multipart form
-		form, _ := context.MultipartForm()
-		files := form.File["upload[]"]
-
-	for _, file := range files {
-			log.Println(file.Filename)
-			var filename = auth.GenerateUID()
-			// Upload the file to specific dst.
-			context.SaveUploadedFile(file, )
-		}
-		context.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
 	}
 
+func AddImages(context *gin.Context){
+		// Multipart form
+		db := middleware.GetDB(context)
+		form, _ := context.MultipartForm()
+		files := form.File["upload[]"]
+		id_string := context.Param("id")
+		id, err := strconv.ParseUint(id_string, 10, 64)
+		private, _ := context.GetQuery("private")
+	if err != nil{
+		context.IndentedJSON(http.StatusBadRequest, gin.H{})
+		return 
+	}
+		user := middleware.GetUser(context)
+		
 
+	for _, file := range files {
+			//log.Println(file.Filename)
+			parts := strings.Split(file.Filename, ".")
+			file_id := auth.GenerateUID(32)
+			filename := "images/" + file_id + parts[len(parts)-1]// 32 for security
+			// Upload the file to specific dst.
+			asset := models.EventAsset{
+			UserID: user.ID,
+			EventID: uint(id), 
+			AssetID: file_id, 
+			Type: parts[len(parts)-1],
+			Private: (private == "true"), 
+		}
+			db.Save(&asset)
+			
+			context.SaveUploadedFile(file, filename)
+		}
+}
 
 func SetUpImagesRoutes(router *gin.RouterGroup){
 	router.GET("/events/:id", middleware.Authenticate(), GetImages)
-	router.POST("/events/:id", middleware.Authenticate(), AddImage)
+	router.POST("/events/:id", middleware.Authenticate(), AddImages)
 }
