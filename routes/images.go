@@ -64,7 +64,7 @@ func AddImages(context *gin.Context) {
 		//log.Println(file.Filename)
 		parts := strings.Split(file.Filename, ".")
 		file_id := auth.GenerateUID(32)
-		filename := "images/" + file_id + parts[len(parts)-1] // 32 for security
+		filename := "images/" + file_id + "." + parts[len(parts)-1] // 32 for security
 		// Upload the file to specific dst.
 		asset := models.EventAsset{
 			UserID:  user.ID,
