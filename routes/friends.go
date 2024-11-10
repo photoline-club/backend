@@ -57,6 +57,8 @@ func AddFriend(ctx *gin.Context) {
 		UserID:   friend.ID,
 		FriendID: user.ID,
 	})
+	ctx.JSON(http.StatusCreated, gin.H{})
+
 }
 
 func SetupFriendsRoutes(router *gin.RouterGroup) {

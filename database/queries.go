@@ -33,3 +33,19 @@ func VisibleEventsForUser(db *gorm.DB, uid uint) []models.Event {
 	}
 	return out
 }
+
+func GetMutualEvents(db *gorm.DB, uid uint, friendID uint) []models.Event {
+	userEvents := VisibleEventsForUser(db, uid)
+	for _, e := range userEvents {
+		var evt models.EventParticipant
+		if !errors.Is(db.Model(&models.EventParticipant{}).
+			Where(&models.EventParticipant{
+				UserID:  friendID,
+				EventID: e.ID,
+			}).
+			First(&evt).Error, gorm.ErrRecordNotFound) {
+			userEvents = append(userEvents, e)
+		}
+	}
+	return userEvents
+}

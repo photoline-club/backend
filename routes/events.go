@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/photoline-club/backend/database"
@@ -12,7 +13,18 @@ import (
 func ListEvents(ctx *gin.Context) {
 	db := middleware.GetDB(ctx)
 	user := middleware.GetUser(ctx)
-	events := database.VisibleEventsForUser(db, user.ID)
+	idstr, _ := ctx.GetQuery("user_id")
+	id, err := strconv.ParseUint(idstr, 10, 64)
+	var events []models.Event
+	if err != nil {
+		events = database.VisibleEventsForUser(db, user.ID)
+	} else {
+		if !database.UsersAreFriends(db, user.ID, uint(id)) {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+			return
+		}
+		events = database.GetMutualEvents(db, user.ID, uint(id))
+	}
 	ctx.JSON(http.StatusOK, gin.H{"events": events})
 }
 
