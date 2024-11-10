@@ -22,17 +22,19 @@ type FriendLink struct {
 	Friend   User `json:"friend,omitempty"`
 	FriendID uint `json:"friend_id,omitempty"`
 }
+
 func (f *FriendLink) AfterFind(tx *gorm.DB) error {
-    f.Friend.FriendInvitationCode = ""
-    return nil
+	f.Friend.FriendInvitationCode = ""
+	return nil
 }
 
 type Event struct {
-	ID          uint      `json:"id,omitempty"`
-	Title       string    `json:"title,omitempty"`
-	Description string    `json:"description,omitempty"`
-	EventStart  time.Time `json:"event_start,omitempty"`
-	EventEnd    time.Time `json:"event_end,omitempty"`
+	ID          uint         `json:"id,omitempty"`
+	Title       string       `json:"title,omitempty"`
+	Description string       `json:"description,omitempty"`
+	EventStart  time.Time    `json:"event_start,omitempty"`
+	EventEnd    time.Time    `json:"event_end,omitempty"`
+	Assets      []EventAsset `json:"assets,omitempty" gorm:"foreignKey:event_id"`
 }
 
 type EventParticipant struct {
