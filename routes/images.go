@@ -11,7 +11,7 @@ import (
 )
 
 type ImageReq struct{
-	Title string `json:"user"` // OPtioal 
+	Title string `json:"title"` // OPtioal 
 	Private bool   `json:"private"`
 }// TODO: why is above warngin 
 
@@ -69,11 +69,15 @@ func AddImages(context *gin.Context){
 			AssetID: file_id, 
 			Type: parts[len(parts)-1],
 			Private: (private == "true"), 
+			Title: file.Filename,
 		}
 			db.Save(&asset)
 			
 			context.SaveUploadedFile(file, filename)
+
 		}
+
+	context.IndentedJSON(http.StatusCreated, nil)
 }
 
 func SetUpImagesRoutes(router *gin.RouterGroup){
