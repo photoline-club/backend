@@ -12,8 +12,8 @@ import (
 	"github.com/photoline-club/backend/models"
 )
 
-type ImageReq struct {
-	Title   string `json:"user"` // OPtioal
+type ImageReq struct{
+	Title string `json:"title"` // OPtioal 
 	Private bool   `json:"private"`
 }
 
@@ -68,6 +68,7 @@ func AddImages(context *gin.Context) {
 			EventID: uint(id),
 			AssetID: file_id,
 			Type:    parts[len(parts)-1],
+			Title: file.Filename,
 			Private: (private == "true"),
 		}
 		db.Save(&asset)
