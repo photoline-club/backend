@@ -22,16 +22,13 @@ func UsersAreFriends(db *gorm.DB, userA uint, userB uint) bool {
 }
 
 func VisibleEventsForUser(db *gorm.DB, uid uint) []models.Event {
-	var res []models.EventParticipant
-	db.Model(&models.EventParticipant{}).
-		Where(&models.EventParticipant{UserID: uid}).
-		Preload("Event").
-		Find(&res)
-	out := make([]models.Event, len(res))
-	for i, ep := range res {
-		out[i] = ep.Event
-	}
-	return out
+	var res []models.Event
+	db.Model(&models.Event{}).
+		Joins("INNER JOIN event_participants ON event_participants.event_id = events.id").
+		Where("event_participants.user_id = ?", uid).
+		Order("events.event_start").
+        Find(&res)
+	return res
 }
 
 func GetMutualEvents(db *gorm.DB, uid uint, friendID uint) []models.Event {
